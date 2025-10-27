@@ -1,7 +1,6 @@
 package com.flipkart.tests;
 
 import com.flipkart.pages.loginpage;
-
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -32,14 +31,10 @@ public class loginflipkart {
         mainWindowHandle = driver.getWindowHandle();
         loginPage = new loginpage(driver);
 
-        // Close initial popup if any
         loginPage.closeLoginPopup();
-
-        // Perform login via mobile number and OTP request
         loginPage.clickLoginLink();
         loginPage.enterMobileNumber("9786232501");
         loginPage.clickRequestOtp();
-        // OTP step would be manual or automated separately if feasible
     }
 
     @Test(priority = 1)
@@ -55,21 +50,6 @@ public class loginflipkart {
         clickFirstProductAndAddToCart();
     }
 
-    @Test(priority = 3, dependsOnMethods = "searchSamsungTabAndAdd", enabled=false)
-    public void logout() throws InterruptedException {
-        // Click profile icon to open dropdown
-        WebElement profileIcon = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div._1ruvv2")));
-        actions.moveToElement(profileIcon).perform();
-
-        // Click Logout button in dropdown menu
-        WebElement logoutBtn = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='Logout']")));
-        logoutBtn.click();
-
-        System.out.println("Clicked logout and logged out of account.");
-        Thread.sleep(2000); // wait for logout to complete
-    }
-
-    // Utility methods
     void searchProduct(String query) {
         WebElement searchBox = wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("q")));
         searchBox.clear();
@@ -95,6 +75,7 @@ public class loginflipkart {
         } catch (ElementClickInterceptedException e) {
             ((JavascriptExecutor) driver).executeScript("arguments[0].click();", addToCartBtn);
         }
+
         Thread.sleep(2000);
         driver.close();
         switchToMainWindow();
