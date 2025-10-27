@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results ignored="1" total="3" passed="2" failed="0" skipped="0">
+  <reporter-output>
+  </reporter-output>
+  <suite started-at="2025-10-27T11:11:29 IST" name="Default suite" finished-at="2025-10-27T11:13:40 IST" duration-ms="130518">
+    <groups>
+    </groups>
+    <test started-at="2025-10-27T11:11:29 IST" name="Default test" finished-at="2025-10-27T11:13:40 IST" duration-ms="130518">
+      <class name="com.flipkart.tests.loginflipkart">
+        <test-method is-config="true" signature="setup()[pri:0, instance:com.flipkart.tests.loginflipkart@6ad82709]" started-at="2025-10-27T11:11:29 IST" name="setup" finished-at="2025-10-27T11:12:59 IST" duration-ms="89708" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setup -->
+        <test-method signature="searchSamsungS25EdgeAndAdd()[pri:1, instance:com.flipkart.tests.loginflipkart@6ad82709]" started-at="2025-10-27T11:12:59 IST" name="searchSamsungS25EdgeAndAdd" finished-at="2025-10-27T11:13:27 IST" duration-ms="27794" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- searchSamsungS25EdgeAndAdd -->
+        <test-method signature="searchSamsungTabAndAdd()[pri:2, instance:com.flipkart.tests.loginflipkart@6ad82709]" started-at="2025-10-27T11:13:27 IST" name="searchSamsungTabAndAdd" finished-at="2025-10-27T11:13:35 IST" depends-on-methods="com.flipkart.tests.loginflipkart.searchSamsungS25EdgeAndAdd" duration-ms="7895" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- searchSamsungTabAndAdd -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:com.flipkart.tests.loginflipkart@6ad82709]" started-at="2025-10-27T11:13:35 IST" name="tearDown" finished-at="2025-10-27T11:13:40 IST" duration-ms="5038" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+      </class> <!-- com.flipkart.tests.loginflipkart -->
+    </test> <!-- Default test -->
+  </suite> <!-- Default suite -->
+</testng-results>
