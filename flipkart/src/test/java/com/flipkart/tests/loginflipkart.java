@@ -1,7 +1,7 @@
 package com.flipkart.tests;
 
 import com.flipkart.pages.loginpage;
-import io.github.bonigarcia.wdm.WebDriverManager;
+
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -22,30 +22,34 @@ public class loginflipkart {
 
     @BeforeClass
     public void setup() {
-        // Setup ChromeDriver using WebDriverManager
-        WebDriverManager.chromedriver().setup();
-
-        // Headless Chrome options for Jenkins/CI
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");          // run in headless mode
-        options.addArguments("--disable-gpu");       // avoid GPU errors
-        options.addArguments("--no-sandbox");        // required for some CI environments
-        options.addArguments("--remote-allow-origins=*"); // keep your original option
+        options.addArguments("--remote-allow-origins=*");
         driver = new ChromeDriver(options);
-
         driver.manage().window().maximize();
         wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         actions = new Actions(driver);
-
         driver.get("https://www.flipkart.com/");
         mainWindowHandle = driver.getWindowHandle();
         loginPage = new loginpage(driver);
 
-        // Login steps
+        // Close initial popup if any
         loginPage.closeLoginPopup();
+
+        // Perform login
         loginPage.clickLoginLink();
-        loginPage.enterMobileNumber("9786232501");
+        loginPage.enterMobileNumber("9025589708");
         loginPage.clickRequestOtp();
+
+        System.out.println("Please enter OTP manually in the browser...");
+
+        // Wait until login is successful by detecting profile icon or user menu
+        try {
+            WebElement profileIcon = new WebDriverWait(driver, Duration.ofMinutes(2))
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div._1ruvv2")));
+            System.out.println("Login successful, proceeding with tests.");
+        } catch (TimeoutException e) {
+            System.out.println("Login was not completed within 2 minutes. Tests will fail.");
+        }
     }
 
     @Test(priority = 1)
@@ -59,6 +63,20 @@ public class loginflipkart {
     public void searchSamsungTabAndAdd() throws InterruptedException {
         searchProduct("Samsung Tab");
         clickFirstProductAndAddToCart();
+    }
+
+    @Test(priority = 3, dependsOnMethods = "searchSamsungTabAndAdd", enabled = false)
+    public void logout() throws InterruptedException {
+        // Click profile icon to open dropdown
+        WebElement profileIcon = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div._1ruvv2")));
+        actions.moveToElement(profileIcon).perform();
+
+        // Click Logout button in dropdown menu
+        WebElement logoutBtn = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='Logout']")));
+        logoutBtn.click();
+
+        System.out.println("Clicked logout and logged out of account.");
+        Thread.sleep(2000); // wait for logout to complete
     }
 
     // Utility methods
@@ -87,7 +105,6 @@ public class loginflipkart {
         } catch (ElementClickInterceptedException e) {
             ((JavascriptExecutor) driver).executeScript("arguments[0].click();", addToCartBtn);
         }
-
         Thread.sleep(2000);
         driver.close();
         switchToMainWindow();
