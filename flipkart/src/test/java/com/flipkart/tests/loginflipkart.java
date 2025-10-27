@@ -1,6 +1,7 @@
 package com.flipkart.tests;
 
 import com.flipkart.pages.loginpage;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -21,16 +22,26 @@ public class loginflipkart {
 
     @BeforeClass
     public void setup() {
+        // Setup ChromeDriver using WebDriverManager
+        WebDriverManager.chromedriver().setup();
+
+        // Headless Chrome options for Jenkins/CI
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--remote-allow-origins=*");
+        options.addArguments("--headless");          // run in headless mode
+        options.addArguments("--disable-gpu");       // avoid GPU errors
+        options.addArguments("--no-sandbox");        // required for some CI environments
+        options.addArguments("--remote-allow-origins=*"); // keep your original option
         driver = new ChromeDriver(options);
+
         driver.manage().window().maximize();
         wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         actions = new Actions(driver);
+
         driver.get("https://www.flipkart.com/");
         mainWindowHandle = driver.getWindowHandle();
         loginPage = new loginpage(driver);
 
+        // Login steps
         loginPage.closeLoginPopup();
         loginPage.clickLoginLink();
         loginPage.enterMobileNumber("9786232501");
@@ -50,6 +61,7 @@ public class loginflipkart {
         clickFirstProductAndAddToCart();
     }
 
+    // Utility methods
     void searchProduct(String query) {
         WebElement searchBox = wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("q")));
         searchBox.clear();
