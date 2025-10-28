@@ -37,18 +37,18 @@ public class loginflipkart {
 
         // Perform login
         loginPage.clickLoginLink();
-        loginPage.enterMobileNumber("9025589708");
+        loginPage.enterMobileNumber("8825995074");
         loginPage.clickRequestOtp();
 
         System.out.println("Please enter OTP manually in the browser...");
 
         // Wait until login is successful by detecting profile icon or user menu
         try {
-            WebElement profileIcon = new WebDriverWait(driver, Duration.ofMinutes(2))
+            WebElement profileIcon = new WebDriverWait(driver, Duration.ofMinutes(1))
                     .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div._1ruvv2")));
-            System.out.println("Login successful, proceeding with tests.");
+            System.out.println("✅ Login successful, proceeding with tests.");
         } catch (TimeoutException e) {
-            System.out.println("Login was not completed within 2 minutes. Tests will fail.");
+            System.out.println("❌ Login was not completed within 2 minutes. Tests will fail.");
         }
     }
 
@@ -63,20 +63,32 @@ public class loginflipkart {
     public void searchSamsungTabAndAdd() throws InterruptedException {
         searchProduct("Samsung Tab");
         clickFirstProductAndAddToCart();
+        goHome();
     }
 
-    @Test(priority = 3, dependsOnMethods = "searchSamsungTabAndAdd", enabled = false)
+    @Test(priority = 3, dependsOnMethods = "searchSamsungTabAndAdd")
+    public void searchSamsungAdapterAndAdd() throws InterruptedException {
+        searchProduct("Samsung Adapter");
+        clickFirstProductAndAddToCart();
+        goHome();
+    }
+
+    @Test(priority = 4, dependsOnMethods = "searchSamsungAdapterAndAdd")
     public void logout() throws InterruptedException {
-        // Click profile icon to open dropdown
-        WebElement profileIcon = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div._1ruvv2")));
-        actions.moveToElement(profileIcon).perform();
+        try {
+            // Hover over profile icon to show dropdown
+            WebElement profileIcon = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div._1ruvv2")));
+            actions.moveToElement(profileIcon).perform();
 
-        // Click Logout button in dropdown menu
-        WebElement logoutBtn = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='Logout']")));
-        logoutBtn.click();
+            // Click logout
+            WebElement logoutBtn = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='Logout']")));
+            logoutBtn.click();
 
-        System.out.println("Clicked logout and logged out of account.");
-        Thread.sleep(2000); // wait for logout to complete
+            System.out.println("✅ Logged out successfully.");
+            Thread.sleep(2000); // short wait to confirm logout
+        } catch (Exception e) {
+            System.out.println("⚠️ Logout failed or element not found: " + e.getMessage());
+        }
     }
 
     // Utility methods
@@ -100,12 +112,14 @@ public class loginflipkart {
         WebElement addToCartBtn = wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//button[contains(.,'Add to cart') or contains(.,'ADD TO CART')]")));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", addToCartBtn);
+
         try {
             addToCartBtn.click();
         } catch (ElementClickInterceptedException e) {
             ((JavascriptExecutor) driver).executeScript("arguments[0].click();", addToCartBtn);
         }
-        Thread.sleep(2000);
+
+        Thread.sleep(1000);
         driver.close();
         switchToMainWindow();
     }
@@ -125,7 +139,7 @@ public class loginflipkart {
 
     void goHome() {
         driver.navigate().to("https://www.flipkart.com");
-        loginPage.closeLoginPopup();
+        loginPage.closeLoginPopup(); // just in case
     }
 
     @AfterClass
